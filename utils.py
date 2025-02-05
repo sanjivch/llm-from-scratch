@@ -2,6 +2,7 @@ import urllib.request
 import json
 import re
 from tokenizer import NaiveTokenizer
+import tiktoken
 
 def download_data(url: str, file_path: str):
     urllib.request.urlretrieve(url, file_path)
@@ -44,9 +45,12 @@ vocab = create_vocab(file_name=file_path)
 # with open("vocab.json", "w") as f: 
 #     json.dump(vocab, f)
 
-tokenizer = NaiveTokenizer(vocab)
-prompt =  """"Hello, do you like tea?"""
-token_ids = tokenizer.encode(prompt)
+# tokenizer = NaiveTokenizer(vocab)
+tokenizer = tiktoken.get_encoding("gpt2")
+prompt =  """"Hello, do you like tea? <|endoftext|> In the sunlit terraces"
+     "of someunknownPlace."""
+token_ids = tokenizer.encode(prompt, allowed_special = {"<|endoftext|>"})
 print(token_ids)
 
-print(tokenizer.decode(token_ids=token_ids))
+# print(tokenizer.decode(token_ids=token_ids))
+print(tokenizer.decode(token_ids))
