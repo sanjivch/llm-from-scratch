@@ -9,6 +9,7 @@ class NaiveTokenizer:
     def encode(self, text: str) -> list:
         preprocessed = re.split(r'([,.:;?_!"()\']|--|\s)', text)
         preprocessed = [i.strip() for i in preprocessed if i.strip()]
+        preprocessed = [i if i in self.token2id else "<|unk|>" for i in preprocessed]
 
         return [self.token2id[token] for token in preprocessed]
     

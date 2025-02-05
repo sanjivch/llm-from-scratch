@@ -17,7 +17,12 @@ def create_vocab(file_name: str) -> dict:
     preprocessed = re.split(r'([,.:;?_!"()\']|--|\s)', raw_text)
     preprocessed = [i.strip() for i in preprocessed if i.strip()]
 
-    tokens = sorted(set(preprocessed))
+    tokens = sorted(list(set(preprocessed)))
+
+    # Add special tokens
+    special_tokens = ["<|endoftext|>", "<|unk|>"]
+    tokens.extend(special_tokens)
+    # print(len(tokens), tokens[-1])
     return {token:token_id for token_id, token in enumerate(tokens)}
 
     
@@ -40,8 +45,7 @@ vocab = create_vocab(file_name=file_path)
 #     json.dump(vocab, f)
 
 tokenizer = NaiveTokenizer(vocab)
-prompt =  """"It's the last he painted, you know," 
-       Mrs. Gisburn said with pardonable pride."""
+prompt =  """"Hello, do you like tea?"""
 token_ids = tokenizer.encode(prompt)
 print(token_ids)
 
