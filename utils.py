@@ -27,6 +27,9 @@ def create_vocab(file_name: str) -> dict:
     return {token:token_id for token_id, token in enumerate(tokens)}
 
     
+def prepare_data(token_ids: list, context_length: int = 8):
+    x = token_ids[:context_length]
+    y = token_ids[1:context_length+1]
 
 
 
@@ -53,4 +56,8 @@ token_ids = tokenizer.encode(prompt, allowed_special = {"<|endoftext|>"})
 print(token_ids)
 
 # print(tokenizer.decode(token_ids=token_ids))
+print(tokenizer.decode(token_ids))
+
+token_ids = tokenizer.encode("Akwirw ier", allowed_special = {"<|endoftext|>"})
+print(token_ids)
 print(tokenizer.decode(token_ids))
