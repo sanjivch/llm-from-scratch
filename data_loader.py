@@ -9,6 +9,8 @@ class LLMDataset(Dataset):
         token_ids = tokenizer.encode(txt)
 
         for i in range(0, len(token_ids)-max_length, stride):
+            # sliding window
+            # inputs will be [i, i+ctx_len]; outputs will be [i+1, i+ctx_len+1]
             in_chunk = token_ids[i:i+max_length]
             out_chunk = token_ids[i+1: i+max_length+1]
             self.in_token_ids.append(torch.tensor(in_chunk))
