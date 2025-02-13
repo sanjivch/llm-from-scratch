@@ -2,10 +2,11 @@ import urllib.request
 import json
 import re
 from tokenizer import NaiveTokenizer
+from embeddings import Embedding
 import tiktoken
 from torch.utils.data import Dataset, DataLoader
 from data_loader import LLMDataset
-
+import torch
 def download_data(url: str, file_path: str):
     urllib.request.urlretrieve(url, file_path)
     return
@@ -70,9 +71,21 @@ token_ids = tokenizer.encode("Akwirw ier", allowed_special = {"<|endoftext|>"})
 print(token_ids)
 print(tokenizer.decode(token_ids))
 
+
+# Load data
 with open("the-verdict.txt", "r") as f:
         raw_text = f.read()
-dataloader = create_dataloader(raw_text, batch_size=1, max_length=4, stride=1, shuffle=False)
+dataloader = create_dataloader(raw_text, batch_size=8, max_length=4, stride=4, shuffle=False)
 data_iter = iter(dataloader)
-first_batch = next(data_iter)
-print(first_batch)
+
+
+
+inputs, targets = next(data_iter)
+max_length = 4
+token_emb_layer = Embedding(vocab_size=50257, output_dim=256)
+pos_emb_layer = Embedding(vocab_size=4, output_dim=256)
+token_embeddings = token_emb_layer.token_embedding(inputs)
+pos_embeddings = pos_emb_layer.token_embedding(torch.arange(4))
+
+input_embeddings = token_embeddings + pos_embeddings
+print(token_embeddings.shape, pos_embeddings.shape, input_embeddings.shape)
